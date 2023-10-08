@@ -17,7 +17,7 @@ import (
 
 const (
 	address = "localhost:50051"
-	dsn     = "user=featureflag password=password dbname=featureflag_dev host=localhost port=5432 sslmode=disable"
+	dsn     = "user=featureflag password=password dbname=featureflag_dev host=host.docker.internal port=5432 sslmode=disable"
 )
 
 func main() {
@@ -48,8 +48,8 @@ func main() {
 		}
 
 		grpcServer := grpc.NewServer()
-		pb.RegisterUserServiceServer(grpcServer, &server.UserServer)
-		pb.RegisterOrganizationServiceServer(grpcServer, &server.OrganizationServer)
+		pb.RegisterUserServiceServer(grpcServer, server.UserServer)
+		pb.RegisterOrganizationServiceServer(grpcServer, server.OrganizationServer)
 
 		fmt.Printf("gRPC server listening on %s\n", address)
 		if err := grpcServer.Serve(lis); err != nil {

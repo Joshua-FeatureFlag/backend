@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helm.fullname" . }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ include "helm.fullname" . }}
+    spec:
+      serviceAccountName: {{ include "helm.serviceAccountName" . }}
+      securityContext:
+              {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: wait-for-migration
+          image: bitnami/kubectl:latest
+          command: ['sh', '-c', 'until kubectl get job {{ include "helm.fullname" . }}-migration -o jsonpath="{.status.succeeded}" | grep 1; do sleep 5; done']
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+                      {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - "--action=serve"
+          ports:
+            - name: grpc
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+  selector:
+    matchLabels:
+      app: {{ include "helm.fullname" . }}
