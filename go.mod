@@ -3,7 +3,7 @@ module github.com/Joshua-FeatureFlag/backend
 go 1.21.1
 
 require (
-	github.com/Joshua-FeatureFlag/proto v1.0.3
+	github.com/Joshua-FeatureFlag/proto v1.0.4
 	gorm.io/driver/postgres v1.5.2
 	gorm.io/gorm v1.25.4
 )
