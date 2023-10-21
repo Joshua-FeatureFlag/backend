@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	pb "github.com/Joshua-FeatureFlag/proto/github.com/Joshua-FeatureFlag/proto/system"
+	pb "github.com/Joshua-FeatureFlag/proto/gen/go"
 	"gorm.io/gorm"
 )
 

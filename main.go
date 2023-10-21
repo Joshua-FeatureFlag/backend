@@ -6,7 +6,7 @@ import (
 	"log"
 	"net"
 
-	pb "github.com/Joshua-FeatureFlag/proto/github.com/Joshua-FeatureFlag/proto/system"
+	pb "github.com/Joshua-FeatureFlag/proto/gen/go"
 	"google.golang.org/grpc"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
