@@ -1,12 +1,15 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
 	"net"
+	"net/http"
 
 	pb "github.com/Joshua-FeatureFlag/proto/gen/go"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -16,33 +19,38 @@ import (
 )
 
 const (
-	address = "localhost:50051"
-	dsn     = "user=featureflag password=password dbname=featureflag_dev host=host.docker.internal port=5432 sslmode=disable"
+	grpc_address = ":50051"
+
+	dsn = "user=featureflag password=password dbname=featureflag_dev host=host.docker.internal port=5432 sslmode=disable"
 )
 
 func main() {
 	action := flag.String("action", "serve", "Action to perform: 'migrate' or 'serve'")
 	flag.Parse()
 
-	// Initialize database connection
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
-	}
-
 	switch *action {
 	case "migrate":
+		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err != nil {
+			log.Fatalf("Failed to connect to database: %v", err)
+		}
+
 		migrate.RunMigration(db)
 		if err != nil {
 			log.Fatalf("Failed to migrate database schema: %v", err)
 		}
 		fmt.Println("Database migration completed successfully")
 	case "serve":
+		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err != nil {
+			log.Fatalf("Failed to connect to database: %v", err)
+		}
+
 		// Create new api.Server instance
 		server := api.NewServer(db)
 
 		// Start gRPC server
-		lis, err := net.Listen("tcp", address)
+		lis, err := net.Listen("tcp", grpc_address)
 		if err != nil {
 			log.Fatalf("Failed to listen: %v", err)
 		}
@@ -51,11 +59,29 @@ func main() {
 		pb.RegisterUserServiceServer(grpcServer, server.UserServer)
 		pb.RegisterOrganizationServiceServer(grpcServer, server.OrganizationServer)
 
-		fmt.Printf("gRPC server listening on %s\n", address)
+		fmt.Printf("gRPC server listening on %s\n", grpc_address)
 		if err := grpcServer.Serve(lis); err != nil {
 			log.Fatalf("Failed to serve: %v", err)
 		}
+	case "http":
+		ctx := context.Background()
+		mux := runtime.NewServeMux()
+		opts := []grpc.DialOption{grpc.WithInsecure()}
+
+		err := pb.RegisterUserServiceHandlerFromEndpoint(ctx, mux, grpc_address, opts)
+		if err != nil {
+			log.Fatalf("failed to start HTTP server: %v", err)
+		}
+		err = pb.RegisterOrganizationServiceHandlerFromEndpoint(ctx, mux, grpc_address, opts)
+		if err != nil {
+			log.Fatalf("failed to start HTTP server: %v", err)
+		}
+
+		err = http.ListenAndServe(":5000", mux)
+		if err != nil {
+			log.Fatalf("failed to start HTTP server: %v", err)
+		}
 	default:
-		log.Fatalf("Unknown action: %s. Supported actions are 'migrate' or 'serve'", *action)
+		log.Fatalf("Unknown action: %s. Supported actions are 'migrate' or 'serve' or 'http'", *action)
 	}
 }
