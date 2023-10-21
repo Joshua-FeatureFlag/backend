@@ -1,7 +1,7 @@
 package models
 
 import (
-	pb "github.com/Joshua-FeatureFlag/proto/gen/go"
+	pb "github.com/Joshua-FeatureFlag/proto/gen/gen/go"
 )
 
 type Organization struct {

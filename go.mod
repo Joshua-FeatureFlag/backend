@@ -3,7 +3,8 @@ module github.com/Joshua-FeatureFlag/backend
 go 1.21.1
 
 require (
-	github.com/Joshua-FeatureFlag/proto v1.0.6
+	github.com/Joshua-FeatureFlag/proto v1.2.0
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.0
 	google.golang.org/grpc v1.58.2
 	gorm.io/driver/postgres v1.5.2
 	gorm.io/gorm v1.25.4
@@ -11,7 +12,6 @@ require (
 
 require (
 	github.com/golang/protobuf v1.5.3 // indirect
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/pgx/v5 v5.4.3 // indirect

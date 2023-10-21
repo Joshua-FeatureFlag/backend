@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 
-	pb "github.com/Joshua-FeatureFlag/proto/gen/go"
+	pb "github.com/Joshua-FeatureFlag/proto/gen/gen/go"
 	"gorm.io/gorm"
 
 	"github.com/Joshua-FeatureFlag/backend/api/organization"

@@ -1,5 +1,5 @@
-github.com/Joshua-FeatureFlag/proto v1.0.6 h1:jbvKtvk9qwkNJd04bdMx2UskPNfxhiq81WjKSQsi5Pg=
-github.com/Joshua-FeatureFlag/proto v1.0.6/go.mod h1:/InBXfTuYbr8oOro1A5WQXWnPhxNXF6bBbg//zmudTY=
+github.com/Joshua-FeatureFlag/proto v1.2.0 h1:+fiqE4ec8sm5x4pZIjSwmleXAJj01sBnTM4UVRY4Fz0=
+github.com/Joshua-FeatureFlag/proto v1.2.0/go.mod h1:/InBXfTuYbr8oOro1A5WQXWnPhxNXF6bBbg//zmudTY=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

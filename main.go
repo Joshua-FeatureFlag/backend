@@ -8,7 +8,7 @@ import (
 	"net"
 	"net/http"
 
-	pb "github.com/Joshua-FeatureFlag/proto/gen/go"
+	pb "github.com/Joshua-FeatureFlag/proto/gen/gen/go"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"gorm.io/driver/postgres"
