@@ -98,9 +98,11 @@ func main() {
 			log.Fatalf("failed to start HTTP server: %v", err)
 		}
 
+		corsWrapper := middleware.CORSMiddleware(customMux)
+
 		// Start HTTP server
 		log.Print("Server listening on :5000")
-		err = http.ListenAndServe(":5000", customMux)
+		err = http.ListenAndServe(":5000", corsWrapper)
 		if err != nil {
 			log.Fatalf("failed to start HTTP server: %v", err)
 		}
