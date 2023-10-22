@@ -18,6 +18,8 @@ func NewUserServiceServer(db *gorm.DB) pb.UserServiceServer {
 }
 
 func (s *UserServiceServer) CreateUser(ctx context.Context, req *pb.User) (*pb.User, error) {
+	fmt.Println(ctx)
+	fmt.Println(req)
 	user := &pb.User{
 		Name:           req.GetName(),
 		OrganizationId: req.GetOrganizationId(),

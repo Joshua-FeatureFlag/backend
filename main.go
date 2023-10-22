@@ -10,11 +10,13 @@ import (
 
 	pb "github.com/Joshua-FeatureFlag/proto/gen/gen/go"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
 	"github.com/Joshua-FeatureFlag/backend/api"
+	"github.com/Joshua-FeatureFlag/backend/middleware"
 	"github.com/Joshua-FeatureFlag/backend/migrate"
 )
 
@@ -64,8 +66,27 @@ func main() {
 			log.Fatalf("Failed to serve: %v", err)
 		}
 	case "http":
+
+		// Load environment variables from a .env file
+		if err := godotenv.Load(); err != nil {
+			log.Fatalf("Error loading the .env file: %v", err)
+		}
+
 		ctx := context.Background()
 		mux := runtime.NewServeMux()
+		customMux := &middleware.CustomMux{
+			Mux: mux,
+			Endpoint: []middleware.Endpoint{
+				{
+					Path: "/v1/user/",
+					Middleware: []middleware.Middleware{
+						middleware.EnsureValidToken(),
+						middleware.EnsureValidScope("user:read"),
+					},
+					Handler: mux,
+				},
+			},
+		}
 		opts := []grpc.DialOption{grpc.WithInsecure()}
 
 		err := pb.RegisterUserServiceHandlerFromEndpoint(ctx, mux, grpc_address, opts)
@@ -77,10 +98,13 @@ func main() {
 			log.Fatalf("failed to start HTTP server: %v", err)
 		}
 
-		err = http.ListenAndServe(":5000", mux)
+		// Start HTTP server
+		log.Print("Server listening on :5000")
+		err = http.ListenAndServe(":5000", customMux)
 		if err != nil {
 			log.Fatalf("failed to start HTTP server: %v", err)
 		}
+
 	default:
 		log.Fatalf("Unknown action: %s. Supported actions are 'migrate' or 'serve' or 'http'", *action)
 	}
