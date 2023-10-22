@@ -13,6 +13,10 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+auth0:
+  domain: 'dev-aelumhqjxjwyvowv.us.auth0.com'
+  audience: 'https://dev-aelumhqjxjwyvowv.us.auth0.com/api/v2/'
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -43,6 +47,7 @@ securityContext:
 service:
   type: ClusterIP
   port: 50051
+  httpPort: 5000
 
 resources:
   {}

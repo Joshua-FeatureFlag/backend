@@ -11,6 +11,6 @@ helm_resource(
     flags=[],
     image_deps=image_deps,
     image_keys=image_keys,
-    port_forwards="50051:50051",
+    port_forwards=["50051:50051", "5000:5000"],
     labels=["services"],
 )

@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 
 	pb "github.com/Joshua-FeatureFlag/proto/gen/gen/go"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -68,8 +69,10 @@ func main() {
 	case "http":
 
 		// Load environment variables from a .env file
-		if err := godotenv.Load(); err != nil {
-			log.Fatalf("Error loading the .env file: %v", err)
+		if os.Getenv("ENVIRONMENT") == "local" {
+			if err := godotenv.Load(); err != nil {
+				log.Fatalf("Error loading the .env file: %v", err)
+			}
 		}
 
 		ctx := context.Background()

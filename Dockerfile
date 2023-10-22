@@ -19,6 +19,7 @@ COPY --from=builder /go/src/app/app /app
 
 # Expose port 50051 for the gRPC server to listen on
 EXPOSE 50051
+EXPOSE 5000
 
 # Set the binary as the entrypoint of the container
 ENTRYPOINT ["/app", "--action=serve"]

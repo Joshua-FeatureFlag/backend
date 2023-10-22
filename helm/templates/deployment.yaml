@@ -15,9 +15,17 @@ spec:
       initContainers:
         - name: wait-for-migration
           image: bitnami/kubectl:latest
-          command: ['sh', '-c', 'until kubectl get job {{ include "helm.fullname" . }}-migration -o jsonpath="{.status.succeeded}" | grep 1; do sleep 5; done']
+          command:
+            - sh
+            - -c
+            - |
+              until kubectl get job {{ include "helm.fullname" . }}-migration -o jsonpath="{.status.succeeded}" | grep 1; do
+                sleep 5;
+              done
+              kubectl delete job {{ include "helm.fullname" . }}-migration;
+
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .Chart.Name }}-grpc
           securityContext:
                       {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -27,6 +35,22 @@ spec:
           ports:
             - name: grpc
               containerPort: {{ .Values.service.port }}
+              protocol: TCP
+        - name: {{ .Chart.Name }}-reverse-proxy
+          env:
+            - name: AUTH0_DOMAIN
+              value: {{ .Values.auth0.domain }}
+            - name: AUTH0_AUDIENCE
+              value: {{ .Values.auth0.audience }}
+          securityContext:
+                      {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - "--action=http"
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.httpPort }}
               protocol: TCP
   selector:
     matchLabels:
