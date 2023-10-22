@@ -84,11 +84,6 @@ func EnsureValidScope(expectedScope string) func(next http.Handler) http.Handler
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			//Extract the claims from the request context
-			w.Header().Set("Access-Control-Allow-Credentials", "true")
-			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-			w.Header().Set("Access-Control-Allow-Headers", "Authorization")
-
-			w.Header().Set("Content-Type", "application/json")
 			token := r.Context().Value(jwtmiddleware.ContextKey{}).(*validator.ValidatedClaims)
 
 			claims := token.CustomClaims.(*CustomClaims)
