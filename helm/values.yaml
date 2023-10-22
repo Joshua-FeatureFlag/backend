@@ -13,6 +13,10 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+disable_containers:
+  grpc: false
+  http: false
+
 auth0:
   domain: 'dev-aelumhqjxjwyvowv.us.auth0.com'
   audience: 'https://dev-aelumhqjxjwyvowv.us.auth0.com/api/v2/'

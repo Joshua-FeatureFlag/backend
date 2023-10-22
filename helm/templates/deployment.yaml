@@ -25,6 +25,7 @@ spec:
               kubectl delete job {{ include "helm.fullname" . }}-migration;
 
       containers:
+        {{ if not .Values.disable_containers.grpc -}}
         - name: {{ .Chart.Name }}-grpc
           securityContext:
                       {{- toYaml .Values.securityContext | nindent 12 }}
@@ -36,6 +37,8 @@ spec:
             - name: grpc
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+        {{- end }}
+        {{ if not .Values.disable_containers.grpc -}}
         - name: {{ .Chart.Name }}-reverse-proxy
           env:
             - name: AUTH0_DOMAIN
@@ -52,6 +55,7 @@ spec:
             - name: http
               containerPort: {{ .Values.service.httpPort }}
               protocol: TCP
+        {{- end }}
   selector:
     matchLabels:
       app: {{ include "helm.fullname" . }}
